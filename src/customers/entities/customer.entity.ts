@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { type UUID } from 'node:crypto';
+import { Account } from '../../accounts/entities/account.entity';
 
 @Entity('customers')
 export class Customer {
@@ -17,4 +18,7 @@ export class Customer {
 
   @Column({ name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
+
+  @OneToMany(() => Account, (account) => account.customer)
+  accounts: Account[];
 }
