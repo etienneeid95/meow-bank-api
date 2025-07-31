@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { MakeTransferDto, TransferResponseDto } from './dto';
+import { type UUID } from 'node:crypto';
+import {
+  MakeTransferDto,
+  TransferResponseDto,
+  GetAccountTransfersDto,
+  AccountTransfersResponseDto,
+} from './dto';
 import type { TransferRepositoryInterface } from './infra/database';
 import type { AccountRepositoryInterface } from '../accounts/infra/database';
 
@@ -89,5 +95,34 @@ export class TransfersService {
         transfer.amount,
       );
     });
+  }
+
+  async getAccountTransfers(
+    accountId: UUID,
+    query: GetAccountTransfersDto,
+  ): Promise<AccountTransfersResponseDto> {
+    const { transfers, total } = await this.transferRepository.findByAccountId(
+      accountId,
+      query.page!,
+      query.limit!,
+      query.sortOrder!,
+    );
+
+    const transactionDtos = transfers.map(
+      (transfer) =>
+        new TransferResponseDto(
+          transfer.id,
+          transfer.fromAccountId,
+          transfer.toAccountId,
+          transfer.amount,
+        ),
+    );
+
+    return new AccountTransfersResponseDto(
+      transactionDtos,
+      query.page!,
+      query.limit!,
+      total,
+    );
   }
 }

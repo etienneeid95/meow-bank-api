@@ -1,6 +1,22 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Get,
+  Param,
+  Query,
+  ParseUUIDPipe,
+} from '@nestjs/common';
+import { type UUID } from 'node:crypto';
 import { TransfersService } from './transfers.service';
-import { MakeTransferDto, TransferResponseDto } from './dto';
+import {
+  MakeTransferDto,
+  TransferResponseDto,
+  GetAccountTransfersDto,
+  AccountTransfersResponseDto,
+} from './dto';
 
 @Controller('transfers')
 export class TransfersController {
@@ -12,5 +28,13 @@ export class TransfersController {
     @Body() makeTransferDto: MakeTransferDto,
   ): Promise<TransferResponseDto> {
     return await this.transfersService.makeTransfer(makeTransferDto);
+  }
+
+  @Get('accounts/:accountId')
+  async getAccountTransfers(
+    @Param('accountId', ParseUUIDPipe) accountId: UUID,
+    @Query() query: GetAccountTransfersDto,
+  ): Promise<AccountTransfersResponseDto> {
+    return await this.transfersService.getAccountTransfers(accountId, query);
   }
 }
