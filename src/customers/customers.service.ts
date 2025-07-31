@@ -15,10 +15,10 @@ export class CustomersService {
     const savedCustomer =
       await this.customerRepository.create(createCustomerDto);
 
-    return {
-      id: savedCustomer.id,
-      firstName: savedCustomer.firstName,
-      lastName: savedCustomer.lastName,
-    };
+    return new CustomerResponseDto(
+      savedCustomer.id,
+      savedCustomer.firstName,
+      savedCustomer.lastName,
+    );
   }
 }
