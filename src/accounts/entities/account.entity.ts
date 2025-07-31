@@ -4,9 +4,11 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { type UUID } from 'node:crypto';
 import { Customer } from '../../customers/entities/customer.entity';
+import { Transfer } from '../../transfers/entities/transfer.entity';
 
 @Entity('accounts')
 export class Account {
@@ -24,6 +26,10 @@ export class Account {
     precision: 15,
     scale: 2,
     default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
   })
   balance: number;
 
@@ -32,4 +38,10 @@ export class Account {
 
   @Column({ name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
+
+  @OneToMany(() => Transfer, (transfer) => transfer.fromAccount)
+  sentTransfers: Transfer[];
+
+  @OneToMany(() => Transfer, (transfer) => transfer.toAccount)
+  receivedTransfers: Transfer[];
 }
