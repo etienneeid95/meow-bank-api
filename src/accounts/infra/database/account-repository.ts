@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, EntityManager } from 'typeorm';
 import { type UUID } from 'node:crypto';
 import { Account } from '../../entities';
 import { AccountRepositoryInterface } from './account-repository.interface';
@@ -17,20 +17,26 @@ export class AccountRepository implements AccountRepositoryInterface {
     return await this.accountRepository.save(account);
   }
 
-  async findById(id: UUID): Promise<Account | null> {
-    return await this.accountRepository.findOne({ where: { id } });
+  async findById(id: UUID, manager?: EntityManager): Promise<Account | null> {
+    const repository =
+      manager?.getRepository(Account) ?? this.accountRepository;
+    return await repository.findOne({ where: { id } });
   }
 
-  async updateBalance(id: UUID, newBalance: number): Promise<Account> {
-    const existingAccount = await this.accountRepository.findOne({
-      where: { id },
-    });
+  async updateBalance(
+    id: UUID,
+    newBalance: number,
+    manager?: EntityManager,
+  ): Promise<Account> {
+    const repository =
+      manager?.getRepository(Account) ?? this.accountRepository;
+
+    const existingAccount = await repository.findOne({ where: { id } });
     if (!existingAccount) {
       throw new NotFoundException(`Account with ID ${id} not found`);
     }
 
-    await this.accountRepository.update({ id }, { balance: newBalance });
-
+    await repository.update({ id }, { balance: newBalance });
     return { ...existingAccount, balance: newBalance };
   }
 }
