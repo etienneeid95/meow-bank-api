@@ -15,5 +15,11 @@ import { CustomerRepository } from './infra/database';
       useClass: CustomerRepository,
     },
   ],
+  exports: [
+    {
+      provide: 'CustomerRepositoryInterface',
+      useClass: CustomerRepository,
+    },
+  ],
 })
 export class CustomersModule {}
