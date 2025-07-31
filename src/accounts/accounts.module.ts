@@ -16,5 +16,11 @@ import { CustomersModule } from '../customers/customers.module';
       useClass: AccountRepository,
     },
   ],
+  exports: [
+    {
+      provide: 'AccountRepositoryInterface',
+      useClass: AccountRepository,
+    },
+  ],
 })
 export class AccountsModule {}
