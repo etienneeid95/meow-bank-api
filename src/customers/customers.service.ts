@@ -1,16 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CreateCustomerDto, CustomerResponseDto } from './dto';
-import { randomUUID } from 'node:crypto';
+import { type CustomerRepositoryInterface } from './infra/database';
 
 @Injectable()
 export class CustomersService {
+  constructor(
+    @Inject('CustomerRepositoryInterface')
+    private readonly customerRepository: CustomerRepositoryInterface,
+  ) {}
+
   async create(
     createCustomerDto: CreateCustomerDto,
   ): Promise<CustomerResponseDto> {
+    const savedCustomer =
+      await this.customerRepository.create(createCustomerDto);
+
     return {
-      id: randomUUID(),
-      firstName: createCustomerDto.firstName,
-      lastName: createCustomerDto.lastName,
+      id: savedCustomer.id,
+      firstName: savedCustomer.firstName,
+      lastName: savedCustomer.lastName,
     };
   }
 }
