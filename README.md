@@ -34,6 +34,12 @@ $ pnpm install
 ## Compile and run the project
 
 ```bash
+# Copy environment variables
+$ cp .env.example .env
+
+# Start the database
+$ docker-compose up -d
+
 # development
 $ pnpm run start
 
@@ -49,26 +55,17 @@ $ pnpm run start:prod
 ```bash
 # unit tests
 $ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
 
-## Deployment
+## Database Migrations
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+The project automatically runs migrations on startup. To generate a new migration after changing an entity:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+$ pnpm run migration:generate src/<module>/infra/database/migrations/<MigrationName>
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Note: Replace `<module>` with the relevant module name and `<MigrationName>` with a descriptive name for your changes.
 
 ## Resources
 
