@@ -32,10 +32,6 @@ export class TransfersService {
   ): Promise<TransferResponseDto> {
     const { fromAccountId, toAccountId, amount } = makeTransferDto;
 
-    if (amount <= 0) {
-      throw new BadRequestException('Balance must be a positive number');
-    }
-
     if (fromAccountId === toAccountId) {
       throw new BadRequestException('Cannot transfer to the same account');
     }

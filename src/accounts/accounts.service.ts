@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { type UUID } from 'node:crypto';
 import { CreateAccountDto, AccountResponseDto } from './dto';
 import type { AccountRepositoryInterface } from './infra/database';
@@ -22,10 +17,6 @@ export class AccountsService {
     createAccountDto: CreateAccountDto,
   ): Promise<AccountResponseDto> {
     const { customerId, balance } = createAccountDto;
-
-    if (balance < 0) {
-      throw new BadRequestException('Balance cannot be negative');
-    }
 
     const customer = await this.customerRepository.findById(customerId);
     if (!customer) {
